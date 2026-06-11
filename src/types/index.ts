@@ -166,6 +166,9 @@ export interface Matchmaker {
   avatarSeed: string;
 }
 
+/** Matchmaker without the password — what UI/session code is allowed to see. */
+export type SafeMatchmaker = Omit<Matchmaker, "password">;
+
 // ---- Matching engine output (consumed in Steps 3 & 4) ----
 
 /** A single human-readable reason contributing to a match score. */
