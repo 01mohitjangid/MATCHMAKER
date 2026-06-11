@@ -58,16 +58,20 @@ async function main() {
       `  • ${customers.length} customers`,
   );
 
-  // Firestore batches cap at 500 ops; we have ~272, so one batch is enough.
-  const batch = writeBatch(db);
-  for (const c of allCandidates) {
-    batch.set(doc(db, COLLECTIONS.candidates, c.id), c);
+  // Flatten into a single write list, then commit in chunks. Firestore caps a
+  // batch at 500 ops; chunking keeps the seed correct even if the pool grows.
+  const writes = [
+    ...allCandidates.map((c) => ({ col: COLLECTIONS.candidates, doc: c })),
+    ...customers.map((c) => ({ col: COLLECTIONS.customers, doc: c })),
+  ];
+  const CHUNK = 450;
+  for (let i = 0; i < writes.length; i += CHUNK) {
+    const batch = writeBatch(db);
+    for (const w of writes.slice(i, i + CHUNK)) {
+      batch.set(doc(db, w.col, w.doc.id), w.doc);
+    }
+    await batch.commit();
   }
-  for (const c of customers) {
-    batch.set(doc(db, COLLECTIONS.customers, c.id), c);
-  }
-
-  await batch.commit();
   console.log("\n✓ Seed complete.\n");
 
   // The Web SDK keeps a connection open; exit explicitly.

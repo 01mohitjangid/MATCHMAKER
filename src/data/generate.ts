@@ -48,14 +48,19 @@ const FAMILY_VALUES = ["Traditional", "Moderate", "Liberal"] as const;
 const MANGLIK = ["Yes", "No", "Doesn't Matter"] as const;
 const YES_NO_MAYBE: YesNoMaybe[] = ["Yes", "No", "Maybe"];
 
-/** Build an ISO DOB string for someone who is `age` years old (approx). */
-function dobForAge(rng: Rng, age: number): string {
-  // Reference "today" is fixed so generated ages stay deterministic.
-  const refYear = 2026;
-  const year = refYear - age;
+/** Reference "today" — fixed so generated ages stay deterministic. */
+const REFERENCE_YEAR = 2026;
+
+/** A random ISO date (YYYY-MM-DD) within the given year. Day capped at 28. */
+function isoDateInYear(rng: Rng, year: number): string {
   const month = randInt(rng, 1, 12);
   const day = randInt(rng, 1, 28);
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+/** Build an ISO DOB string for someone who is `age` years old (approx). */
+function dobForAge(rng: Rng, age: number): string {
+  return isoDateInYear(rng, REFERENCE_YEAR - age);
 }
 
 function makeEmail(first: string, last: string, n: number): string {
@@ -216,7 +221,7 @@ export function generateCustomers(
       matchmakerId,
       status,
       verified: status !== "New Lead" && status !== "Profile Review",
-      joinedAt: dobForAge(rng, 0).replace("2026", "2025"),
+      joinedAt: isoDateInYear(rng, REFERENCE_YEAR - 1),
       preferences: derivePreferences(rng, bio),
       notes: [],
     });

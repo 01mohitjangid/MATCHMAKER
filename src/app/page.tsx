@@ -239,6 +239,9 @@ export default async function Home() {
 /* ----------------------------- Pieces ------------------------------ */
 
 function SiteNav() {
+  // Derive name parts from the single source of truth instead of hardcoding.
+  const [firstName = "", ...rest] = DEMO_MATCHMAKER.name.split(" ");
+  const lastName = rest.join(" ");
   return (
     <nav className="mt-6 flex items-center justify-between rounded-pill border border-line bg-surface px-5 py-3 shadow-sm">
       <div className="flex items-center gap-2.5">
@@ -264,7 +267,7 @@ function SiteNav() {
           </span>
         </span>
         <Avatar
-          person={{ firstName: "Priya", lastName: "Nair", avatarSeed: DEMO_MATCHMAKER.avatarSeed }}
+          person={{ firstName, lastName, avatarSeed: DEMO_MATCHMAKER.avatarSeed }}
           size={36}
         />
       </div>
