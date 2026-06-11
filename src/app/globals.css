@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * TDC Matchmaker — design system v2.
+ *
+ * Direction: clean & premium, inspired by the Google Store / Antigravity
+ * aesthetic — white canvas, generous whitespace, large soft-rounded cards on
+ * pastel tints, bold modern type, a single refined accent. Still emotionally
+ * warm (it's matchmaking) via a rose brand colour used sparingly.
+ *
+ * Tailwind v4: tokens declared here become utilities, e.g. `bg-tint-mint`,
+ * `text-ink`, `rounded-card`, `text-accent`.
+ */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
+  /* ---- Brand & accent ---------------------------------------------- */
+  --color-brand: #e23e6b;          /* warm rose — logo, primary CTA */
+  --color-brand-strong: #c22a55;
+  --color-brand-soft: #fce8ef;
+  --color-accent: #1a73e8;         /* link / action blue (Google-ish) */
+  --color-accent-soft: #e8f0fe;
+
+  /* ---- Canvas & surfaces ------------------------------------------- */
+  --color-canvas: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f7f9;
+
+  /* ---- Pastel card tints (for feature tiles / highlights) ---------- */
+  --color-tint-mint: #e6f4ea;
+  --color-tint-sky: #e8f0fe;
+  --color-tint-lilac: #f3e8fd;
+  --color-tint-peach: #fef3e2;
+  --color-tint-blush: #fce8ef;
+  --color-tint-lavender: #ebe9fb;
+
+  /* ---- Text -------------------------------------------------------- */
+  --color-ink: #1f1d24;
+  --color-ink-soft: #5f6368;
+  --color-ink-faint: #9aa0a6;
+
+  /* ---- Lines ------------------------------------------------------- */
+  --color-line: #ececef;
+  --color-line-strong: #dadce0;
+
+  /* ---- Status (journey stages / match tiers) ----------------------- */
+  --color-positive: #1e8e5a;
+  --color-positive-soft: #e6f4ea;
+  --color-warning: #b07d12;
+  --color-warning-soft: #fef3e2;
+  --color-danger: #d23f31;
+  --color-danger-soft: #fce8e6;
+
+  /* ---- Shape ------------------------------------------------------- */
+  --radius-card: 1.75rem;          /* large, premium rounding */
+  --radius-tile: 1.25rem;
+  --radius-pill: 9999px;
+
+  /* ---- Fonts (wired up by next/font in layout.tsx) ----------------- */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Big display headings get tighter tracking for a premium, modern feel. */
+.display {
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+/* Subtle focus ring used across interactive elements. */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Smooth scroll for in-page anchor CTAs. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
