@@ -1,14 +1,5 @@
-/**
- * Tiny deterministic PRNG (mulberry32) + helpers.
- *
- * We seed all dummy-data generation so the profile pool is identical on every
- * reload and across server/client renders. This avoids hydration mismatches
- * and keeps the demo stable (the same customer always gets the same matches).
- */
-
 export type Rng = () => number;
 
-/** Returns a seeded random function producing floats in [0, 1). */
 export function createRng(seed: number): Rng {
   let a = seed >>> 0;
   return function () {
@@ -20,17 +11,14 @@ export function createRng(seed: number): Rng {
   };
 }
 
-/** Integer in [min, max] inclusive. */
 export function randInt(rng: Rng, min: number, max: number): number {
   return Math.floor(rng() * (max - min + 1)) + min;
 }
 
-/** Pick one element from a non-empty array. */
 export function pick<T>(rng: Rng, items: readonly T[]): T {
   return items[Math.floor(rng() * items.length)];
 }
 
-/** Pick `count` distinct elements (or all, if count exceeds length). */
 export function pickMany<T>(rng: Rng, items: readonly T[], count: number): T[] {
   const pool = [...items];
   const out: T[] = [];
@@ -41,12 +29,10 @@ export function pickMany<T>(rng: Rng, items: readonly T[], count: number): T[] {
   return out;
 }
 
-/** True with the given probability (0–1). */
 export function chance(rng: Rng, probability: number): boolean {
   return rng() < probability;
 }
 
-/** Weighted pick: items paired with relative weights. */
 export function weightedPick<T>(
   rng: Rng,
   entries: readonly (readonly [T, number])[],

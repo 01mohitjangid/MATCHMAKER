@@ -1,25 +1,3 @@
-/**
- * Gender-specific matching engine.
- *
- * Pipeline:
- *   1. Hard filters — drop ineligible candidates (marital status, religion if
- *      the client specified one, and an absolute age-sanity window).
- *   2. Weighted scoring — each dimension scores 0..1; weights differ by the
- *      client's gender. Three dimensions are *directional* (age / income /
- *      height) and flip meaning by gender, per the brief:
- *        • Male clients  → younger, earns-less, shorter are rewarded.
- *        • Female clients → values, profession, and relocation lead; age leans
- *          similar/slightly-older, height leans taller.
- *      Per the product decision, directional rules are WEIGHTED (boost the
- *      score) rather than hard filters — a great fit elsewhere still surfaces.
- *   3. Tier + reasons — score maps to a tier and the top contributing factors
- *      become human-readable reasons (also the input for the Step 4 AI).
- *   4. Rank — sort by score, deterministic tie-breaks.
- *
- * Everything here is a pure function, so it's trivially testable and runs the
- * same on server or client.
- */
-
 import { ageFromDob } from "@/lib/utils";
 import type {
   Biodata,
@@ -32,17 +10,13 @@ import type {
 } from "@/types";
 
 interface DimensionScore {
-  /** 0..1 */
   score: number;
-  /** Human-readable summary of this dimension for this pairing. */
   label: string;
 }
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 
-/** Relative dimension weights per the client's gender (normalised at scoring). */
 const WEIGHTS: Record<Gender, Record<string, number>> = {
-  // Male → women: brief's directional traits + children lead.
   Male: {
     kids: 20,
     age: 18,
@@ -54,7 +28,6 @@ const WEIGHTS: Record<Gender, Record<string, number>> = {
     location: 6,
     profession: 4,
   },
-  // Female → men: "thoughtful" — values, profession, relocation lead.
   Female: {
     values: 20,
     profession: 18,
@@ -68,7 +41,6 @@ const WEIGHTS: Record<Gender, Record<string, number>> = {
   },
 };
 
-/** Institutes treated as a peer tier for the education dimension. */
 const PREMIER_INSTITUTES = new Set([
   "IIT Bombay",
   "IIT Delhi",
@@ -84,7 +56,6 @@ const PREMIER_INSTITUTES = new Set([
 
 const yrs = (n: number) => `${n} yr${n === 1 ? "" : "s"}`;
 
-// ---- dimension scorers ---------------------------------------------------
 
 function scoreKids(a: Biodata, b: Biodata): DimensionScore {
   if (a.wantKids === b.wantKids) {
@@ -229,7 +200,6 @@ function scoreProfession(a: Biodata, b: Biodata): DimensionScore {
   return { score: 0.55, label: "Differing academic background" };
 }
 
-// ---- assembly ------------------------------------------------------------
 
 function tierForScore(score: number): MatchTier {
   if (score >= 80) return "High Potential Match";
@@ -291,10 +261,7 @@ function isEligible(client: Customer, c: Candidate): boolean {
   return true;
 }
 
-/**
- * Rank the opposite-gender pool for a client, best first.
- * @param pool candidates of the opposite gender (see `getCandidatePoolFor`).
- */
+
 export function rankMatches(
   client: Customer,
   pool: Candidate[],

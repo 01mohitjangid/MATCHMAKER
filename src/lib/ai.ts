@@ -1,13 +1,3 @@
-/**
- * AI email-intro generation.
- *
- * Speaks the standard OpenAI Chat Completions API, so it works with OpenAI,
- * Groq, OpenRouter, Gemini, etc. — only env vars change. Defaults to Groq's
- * free Llama 3.3 70B. If no key is set (or the call fails), it falls back to a
- * clean templated intro, so the feature ALWAYS works (e.g. on the live demo).
- *
- * Server-only: the key never reaches the client.
- */
 
 import { ageFromDob, formatHeight, formatIncome, fullName } from "@/lib/utils";
 import type { Biodata, Candidate, Customer, MatchReason } from "@/types";
