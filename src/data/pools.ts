@@ -1,10 +1,4 @@
-/**
- * Source pools for dummy-profile generation.
- *
- * These are intentionally India-centric to make the matchmaking pool feel
- * authentic (names, cities, mother tongues, colleges, communities). All data
- * is fictional and for demo purposes only.
- */
+
 
 export const FIRST_NAMES_MALE = [
   "Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Reyansh", "Krishna", "Ishaan",
@@ -42,7 +36,6 @@ export const CITIES: { city: string; country: string }[] = [
   { city: "Noida", country: "India" },
   { city: "Kochi", country: "India" },
   { city: "Indore", country: "India" },
-  // A sprinkling of NRIs — common in premium matchmaking.
   { city: "San Francisco", country: "USA" },
   { city: "London", country: "UK" },
   { city: "Singapore", country: "Singapore" },
@@ -81,7 +74,6 @@ export const RELIGIONS = [
   "Hindu", "Muslim", "Christian", "Sikh", "Jain", "Buddhist", "Parsi",
 ] as const;
 
-/** Communities indexed loosely under a religion to keep pairings believable. */
 export const CASTES_BY_RELIGION: Record<string, string[]> = {
   Hindu: ["Brahmin", "Kshatriya", "Agarwal", "Maratha", "Reddy", "Nair", "Iyer", "Kayastha", "Rajput", "Khatri"],
   Muslim: ["Sunni", "Shia", "Khoja", "Memon"],
@@ -102,7 +94,6 @@ export const LANGUAGES = [
   "Kannada", "Malayalam", "Punjabi", "French", "Spanish",
 ] as const;
 
-/** Short "about me" fragments, assembled into a one-liner per profile. */
 export const ABOUT_OPENERS = [
   "Easy-going and curious",
   "Ambitious but grounded",

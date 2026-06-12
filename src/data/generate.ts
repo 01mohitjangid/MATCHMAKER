@@ -1,9 +1,3 @@
-/**
- * Deterministic generators that turn the raw pools into rich, internally
- * consistent profiles. Everything is seeded (see `lib/rng`) so the demo data
- * is stable across reloads and SSR.
- */
-
 import {
   createRng,
   type Rng,

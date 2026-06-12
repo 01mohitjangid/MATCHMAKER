@@ -1,14 +1,3 @@
-/**
- * Firebase initialisation (modular Web SDK v9+).
- *
- * Config comes from `NEXT_PUBLIC_FIREBASE_*` env vars (see `.env.example`).
- * These keys are safe to expose to the client — Firebase security is enforced
- * by Firestore rules, not by hiding the config.
- *
- * `isFirebaseConfigured` lets the data layer fall back to in-memory seed data
- * when no project is wired up yet, so the app still boots during local dev.
- */
-
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getFirestore,
@@ -30,15 +19,13 @@ export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey && firebaseConfig.projectId,
 );
 
-/** Lazily create (or reuse) the Firebase app + Firestore handle. */
 export function getDb(): Firestore {
   if (!isFirebaseConfigured) {
     throw new Error(
       "Firebase is not configured. Set NEXT_PUBLIC_FIREBASE_* in .env.local.",
     );
   }
-  // First call initialises Firestore with `ignoreUndefinedProperties` so
-  // optional fields (e.g. preferences.minIncomeLPA) don't break writes.
+  
   if (!getApps().length) {
     const app = initializeApp(firebaseConfig);
     return initializeFirestore(app, { ignoreUndefinedProperties: true });
