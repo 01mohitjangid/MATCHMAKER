@@ -1,20 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { MatchList } from "@/components/app/MatchList";
+import {
+  BiodataSections,
+  PreferencesSection,
+} from "@/components/app/ProfileSections";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge, toneForStage } from "@/components/ui/Badge";
-import { ShieldCheck, Sparkles } from "@/components/ui/Icons";
-import { getCustomerById } from "@/data/repository";
-import {
-  ageFromDob,
-  formatHeight,
-  formatIncome,
-  fullName,
-} from "@/lib/utils";
+import { ShieldCheck } from "@/components/ui/Icons";
+import { getCandidatePoolFor, getCustomerById } from "@/data/repository";
+import { rankMatches } from "@/lib/matching";
+import { ageFromDob, fullName } from "@/lib/utils";
 
 /**
- * Client detail view (Step 2: header + quick info + routing).
- * The full biodata layout and AI-ranked matches land in Step 3.
+ * Client detail view — full verified biodata, partner preferences, and the
+ * gender-specific ranked matches with explainable scores.
  */
 export default async function ClientDetailPage({
   params,
@@ -25,20 +26,9 @@ export default async function ClientDetailPage({
   const customer = await getCustomerById(id);
   if (!customer) notFound();
 
-  const quickInfo: { label: string; value: string }[] = [
-    { label: "Gender", value: customer.gender },
-    { label: "City", value: `${customer.city}, ${customer.country}` },
-    { label: "Marital status", value: customer.maritalStatus },
-    { label: "Height", value: formatHeight(customer.heightCm) },
-    { label: "Income", value: formatIncome(customer.incomeLPA) },
-    {
-      label: "Works as",
-      value: `${customer.designation} · ${customer.currentCompany}`,
-    },
-    { label: "Religion", value: `${customer.religion} · ${customer.caste}` },
-    { label: "Email", value: customer.email },
-    { label: "Phone", value: customer.phone },
-  ];
+  // Opposite-gender pool → ranked, scored matches.
+  const pool = await getCandidatePoolFor(customer.gender);
+  const matches = rankMatches(customer, pool);
 
   return (
     <div>
@@ -66,41 +56,40 @@ export default async function ClientDetailPage({
             )}
           </div>
           <p className="mt-0.5 text-ink-soft">
-            {ageFromDob(customer.dateOfBirth)} yrs · {customer.city}
+            {ageFromDob(customer.dateOfBirth)} yrs · {customer.gender} ·{" "}
+            {customer.city}
           </p>
         </div>
         <Badge tone={toneForStage(customer.status)}>{customer.status}</Badge>
       </header>
 
-      {/* Quick info */}
-      <section className="mt-6">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-faint">
-          Quick info
-        </h2>
-        <dl className="grid gap-x-6 gap-y-4 rounded-card border border-line bg-surface p-6 sm:grid-cols-2 lg:grid-cols-3">
-          {quickInfo.map((item) => (
-            <div key={item.label}>
-              <dt className="text-xs uppercase tracking-wide text-ink-faint">
-                {item.label}
-              </dt>
-              <dd className="mt-0.5 font-medium wrap-break-word">{item.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      {/* Biodata */}
+      <div className="mt-8">
+        <BiodataSections person={customer} />
+      </div>
 
-      {/* Step 3 placeholder */}
-      <section className="mt-6 flex items-start gap-4 rounded-card border border-dashed border-line-strong bg-tint-lilac/40 p-6">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/70 text-[#7c3aed]">
-          <Sparkles className="h-6 w-6" />
-        </span>
-        <div>
-          <h2 className="font-semibold">Full biodata &amp; AI-ranked matches</h2>
-          <p className="mt-1 text-sm text-ink-soft">
-            The complete profile and the gender-specific matching engine with
-            scored, explainable suggestions arrive in Step 3.
+      {/* Partner preferences */}
+      <div className="mt-8">
+        <PreferencesSection preferences={customer.preferences} />
+      </div>
+
+      {/* Matches */}
+      <section className="mt-10">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand">
+              Suggested matches
+            </p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight">
+              Top {matches.length} for {customer.firstName}
+            </h2>
+          </div>
+          <p className="hidden max-w-xs text-right text-sm text-ink-faint sm:block">
+            Ranked by a {customer.gender.toLowerCase()}-specific compatibility
+            score.
           </p>
         </div>
+        <MatchList matches={matches} />
       </section>
     </div>
   );
