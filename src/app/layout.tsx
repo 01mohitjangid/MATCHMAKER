@@ -31,7 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <div className="flex-1">{children}</div>
-        {/* <SiteFooter /> */}
+        <SiteFooter />
       </body>
     </html>
   );

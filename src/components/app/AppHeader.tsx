@@ -16,7 +16,7 @@ export function AppHeader({ matchmaker }: { matchmaker: SafeMatchmaker }) {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-brand text-base font-bold text-white">
             ♥
           </span>
