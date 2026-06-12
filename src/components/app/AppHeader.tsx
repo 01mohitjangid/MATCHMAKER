@@ -26,14 +26,6 @@ export function AppHeader({ matchmaker }: { matchmaker: SafeMatchmaker }) {
         </Link>
 
         <div className="flex items-center gap-3">
-          <span className="hidden text-right text-sm sm:block">
-            <span className="block font-medium leading-tight">
-              {matchmaker.name}
-            </span>
-            <span className="block text-xs leading-tight text-ink-faint">
-              Matchmaker
-            </span>
-          </span>
           <Avatar
             person={{ firstName, lastName, avatarSeed: matchmaker.avatarSeed }}
             size={36}
