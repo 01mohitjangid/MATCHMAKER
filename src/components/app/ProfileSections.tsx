@@ -11,12 +11,31 @@ function Field({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+type Tint =
+  | "mint"
+  | "sky"
+  | "lilac"
+  | "peach"
+  | "blush"
+  | "lavender";
+
+const TINT_BG: Record<Tint, string> = {
+  mint: "bg-tint-mint",
+  sky: "bg-tint-sky",
+  lilac: "bg-tint-lilac",
+  peach: "bg-tint-peach",
+  blush: "bg-tint-blush",
+  lavender: "bg-tint-lavender",
+};
+
 /** A titled card containing a responsive grid of fields. */
 function Section({
   title,
+  tint = "sky",
   children,
 }: {
   title: string;
+  tint?: Tint;
   children: React.ReactNode;
 }) {
   return (
@@ -24,7 +43,9 @@ function Section({
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-faint">
         {title}
       </h2>
-      <dl className="grid gap-x-6 gap-y-4 rounded-card border border-line bg-surface p-6 sm:grid-cols-2 lg:grid-cols-3">
+      <dl
+        className={`grid gap-x-6 gap-y-4 rounded-card ${TINT_BG[tint]} p-7 sm:grid-cols-2 lg:grid-cols-3`}
+      >
         {children}
       </dl>
     </section>
@@ -35,7 +56,7 @@ function Section({
 export function BiodataSections({ person }: { person: Biodata }) {
   return (
     <div className="space-y-6">
-      <Section title="Personal">
+      <Section title="Personal" tint="mint">
         <Field label="First name" value={person.firstName} />
         <Field label="Last name" value={person.lastName} />
         <Field label="Gender" value={person.gender} />
@@ -52,14 +73,14 @@ export function BiodataSections({ person }: { person: Biodata }) {
         />
       </Section>
 
-      <Section title="Location & contact">
+      <Section title="Location & contact" tint="sky">
         <Field label="City" value={person.city} />
         <Field label="Country" value={person.country} />
         <Field label="Email" value={person.email} />
         <Field label="Phone" value={person.phone} />
       </Section>
 
-      <Section title="Education & career">
+      <Section title="Education & career" tint="lilac">
         <Field label="College" value={person.undergraduateCollege} />
         <Field label="Degree" value={person.degree} />
         <Field label="Company" value={person.currentCompany} />
@@ -67,13 +88,13 @@ export function BiodataSections({ person }: { person: Biodata }) {
         <Field label="Income" value={formatIncome(person.incomeLPA)} />
       </Section>
 
-      <Section title="Community">
+      <Section title="Community" tint="peach">
         <Field label="Religion" value={person.religion} />
         <Field label="Caste" value={person.caste} />
         <Field label="Mother tongue" value={person.motherTongue} />
       </Section>
 
-      <Section title="Lifestyle & family">
+      <Section title="Lifestyle & family" tint="blush">
         <Field label="Diet" value={person.diet} />
         <Field label="Drinking" value={person.drinking} />
         <Field label="Smoking" value={person.smoking} />
@@ -89,7 +110,7 @@ export function BiodataSections({ person }: { person: Biodata }) {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-faint">
           About
         </h2>
-        <p className="rounded-card border border-line bg-surface p-6 italic text-ink-soft">
+        <p className="rounded-card bg-tint-lavender p-7 italic text-ink-soft">
           “{person.about}”
         </p>
       </section>
@@ -111,7 +132,7 @@ export function PreferencesSection({
     : "Any";
 
   return (
-    <Section title="Partner preferences">
+    <Section title="Partner preferences" tint="lavender">
       <Field label="Age range" value={`${minAge} – ${maxAge} yrs`} />
       <Field label="Height range" value={heightRange} />
       <Field
