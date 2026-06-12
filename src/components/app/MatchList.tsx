@@ -1,6 +1,6 @@
+import { SendMatchControl } from "@/components/app/SendMatchControl";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
-import { HeartSend } from "@/components/ui/Icons";
 import { ageFromDob, cn, formatHeight, formatIncome, fullName } from "@/lib/utils";
 import type { MatchResult, MatchTier } from "@/types";
 
@@ -17,7 +17,15 @@ const TIER_STYLE: Record<MatchTier, { tone: Tone; number: string; ring: string }
   "Long Shot": { tone: "neutral", number: "text-ink-faint", ring: "border-line" },
 };
 
-export function MatchList({ matches }: { matches: MatchResult[] }) {
+export function MatchList({
+  matches,
+  clientId,
+  sentIds,
+}: {
+  matches: MatchResult[];
+  clientId: string;
+  sentIds: string[];
+}) {
   if (matches.length === 0) {
     return (
       <p className="rounded-card border border-line bg-surface px-5 py-12 text-center text-sm text-ink-faint">
@@ -26,16 +34,31 @@ export function MatchList({ matches }: { matches: MatchResult[] }) {
     );
   }
 
+  const sent = new Set(sentIds);
+
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       {matches.map((m) => (
-        <MatchCard key={m.candidate.id} match={m} />
+        <MatchCard
+          key={m.candidate.id}
+          match={m}
+          clientId={clientId}
+          alreadySent={sent.has(m.candidate.id)}
+        />
       ))}
     </div>
   );
 }
 
-function MatchCard({ match }: { match: MatchResult }) {
+function MatchCard({
+  match,
+  clientId,
+  alreadySent,
+}: {
+  match: MatchResult;
+  clientId: string;
+  alreadySent: boolean;
+}) {
   const { candidate: c, score, tier, reasons } = match;
   const style = TIER_STYLE[tier];
   const topReasons = reasons.filter((r) => r.positive).slice(0, 4);
@@ -83,16 +106,17 @@ function MatchCard({ match }: { match: MatchResult }) {
         <span className="text-xs text-ink-faint">
           {c.activeOnApp ? "Active recently" : "On the roster"}
         </span>
-        {/* Wired up in Step 4 (AI intro + mock email). */}
-        <button
-          type="button"
-          disabled
-          title="Send match arrives in Step 4"
-          className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-pill bg-brand px-4 py-2 text-sm font-medium text-white opacity-50"
-        >
-          <HeartSend className="h-4 w-4" />
-          Send match
-        </button>
+        <SendMatchControl
+          clientId={clientId}
+          candidate={{
+            id: c.id,
+            firstName: c.firstName,
+            lastName: c.lastName,
+            avatarSeed: c.avatarSeed,
+          }}
+          reasons={reasons}
+          alreadySent={alreadySent}
+        />
       </div>
     </article>
   );
