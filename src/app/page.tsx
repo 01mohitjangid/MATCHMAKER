@@ -5,8 +5,10 @@ import {
   ArrowRight,
   HeartSend,
   Mail,
+  MapPin,
   NoteIcon,
   Route,
+  Search,
   ShieldCheck,
   Sparkles,
 } from "@/components/ui/Icons";
@@ -76,41 +78,103 @@ export default async function Home() {
 
   return (
     <div className="min-h-dvh bg-canvas">
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
-        <SiteNav isAuthed={isAuthed} />
+      {/* Hero — full-bleed peach search experience */}
+      <section className="relative isolate overflow-hidden">
+        {/* Peach gradient background */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(180deg, #ffeede 0%, #ffe2d2 45%, #fff4ea 100%)",
+          }}
+        />
+        {/* Soft glow blobs */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-24 top-10 -z-10 h-72 w-72 rounded-full bg-white/60 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-40 -z-10 h-72 w-72 rounded-full bg-white/50 blur-3xl"
+        />
+        {/* Floral decorations */}
+        <FloralLeft className="pointer-events-none absolute -left-4 top-32 hidden h-44 w-44 md:block lg:left-6 lg:h-56 lg:w-56" />
+        <FloralRight className="pointer-events-none absolute -right-4 top-40 hidden h-44 w-44 md:block lg:right-6 lg:h-56 lg:w-56" />
 
-        {/* Hero */}
-        <section className="py-14 sm:py-20">
-          <span className="inline-flex items-center gap-2 rounded-pill border border-line bg-surface-muted px-3.5 py-1.5 text-sm font-medium text-ink-soft">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-            Internal matchmaking tool · The Date Crew
-          </span>
+        <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+          <SiteNav isAuthed={isAuthed} />
 
-          <h1 className="display mt-6 max-w-3xl text-5xl font-bold sm:text-6xl">
-            Make every introduction count.
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
-            One calm workspace to manage your clients, read verified profiles,
-            and assign matches that actually fit, backed by smart scoring and AI.
-          </p>
+          <div className="relative pb-20 pt-14 text-center sm:pb-28 sm:pt-20">
+            <h1 className="display mx-auto max-w-3xl text-4xl font-bold text-ink sm:text-6xl">
+              Find a partner of <br className="hidden sm:block" /> your choice
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base text-ink-soft sm:text-lg">
+              We made it easy for you to get your life partner in your location.
+            </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href={isAuthed ? "/dashboard" : "/login"}
-              className="inline-flex items-center gap-2 rounded-pill bg-brand px-6 py-3 font-medium text-white transition-colors hover:bg-brand-strong"
+            {/* Search card */}
+            <form
+              action={isAuthed ? "/dashboard" : "/login"}
+              className="mx-auto mt-10 max-w-4xl rounded-3xl bg-white p-3 text-left shadow-[0_25px_60px_-20px_rgba(226,62,107,0.25)] ring-1 ring-black/5"
             >
-              {isAuthed ? "Go to dashboard" : "Sign in to continue"}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href="#profiles"
-              className="inline-flex items-center gap-2 rounded-pill border border-line-strong bg-surface px-6 py-3 font-medium text-ink transition-colors hover:bg-surface-muted"
-            >
-              View sample profiles
-            </a>
+              <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-[1fr_1fr_1.1fr_auto]">
+                <SearchSelect
+                  label="I'm looking for"
+                  name="lookingFor"
+                  defaultValue="female"
+                  options={[
+                    { value: "female", label: "Female's Biodata" },
+                    { value: "male", label: "Male's Biodata" },
+                  ]}
+                />
+                <SearchSelect
+                  label="Marital Status"
+                  name="maritalStatus"
+                  defaultValue="never"
+                  options={[
+                    { value: "never", label: "Never Married" },
+                    { value: "divorced", label: "Divorced" },
+                    { value: "widowed", label: "Widowed" },
+                  ]}
+                  withDivider
+                />
+                <SearchInput
+                  label="Location"
+                  name="location"
+                  placeholder="Where are you looking for?"
+                  withDivider
+                />
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-brand px-7 py-4 font-medium text-white transition-colors hover:bg-brand-strong sm:rounded-2xl"
+                >
+                  <Search className="h-4 w-4" />
+                  Search
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href={isAuthed ? "/dashboard" : "/login"}
+                className="inline-flex items-center gap-2 rounded-pill bg-ink px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink/90"
+              >
+                {isAuthed ? "Go to dashboard" : "Sign in to continue"}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a
+                href="#profiles"
+                className="inline-flex items-center gap-2 rounded-pill border border-line-strong bg-white/70 px-5 py-2.5 text-sm font-medium text-ink backdrop-blur transition-colors hover:bg-white"
+              >
+                View sample profiles
+              </a>
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
+      <div className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8">
         {/* Stats */}
         <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Stat value={stats.customers} label="Assigned clients" />
@@ -196,8 +260,6 @@ export default async function Home() {
             ))}
           </div>
         </section>
-
-        <Footer />
       </div>
     </div>
   );
@@ -245,16 +307,164 @@ function Row({ k, v }: { k: string; v: string }) {
   );
 }
 
-function Footer() {
+/* ------------------------- Hero search bar ------------------------- */
+
+type Option = { value: string; label: string };
+
+function SearchSelect({
+  label,
+  name,
+  defaultValue,
+  options,
+  withDivider = false,
+}: {
+  label: string;
+  name: string;
+  defaultValue: string;
+  options: Option[];
+  withDivider?: boolean;
+}) {
   return (
-    <footer className="mt-20 border-t border-line py-10 text-sm text-ink-faint">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p>TDC Matchmaker · Internal MVP</p>
-        <p>
-          Demo login —{" "}
-          <span className="font-medium text-ink-soft">priya / tdc1234</span>
-        </p>
+    <label
+      className={`relative flex flex-col justify-center px-5 py-3 sm:py-2 ${
+        withDivider ? "sm:border-l sm:border-line" : ""
+      }`}
+    >
+      <span className="text-[13px] font-semibold text-ink">{label}</span>
+      <div className="relative mt-1">
+        <select
+          name={name}
+          defaultValue={defaultValue}
+          className="w-full appearance-none bg-transparent pr-6 text-sm text-ink-soft outline-none"
+        >
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
       </div>
-    </footer>
+    </label>
+  );
+}
+
+function SearchInput({
+  label,
+  name,
+  placeholder,
+  withDivider = false,
+}: {
+  label: string;
+  name: string;
+  placeholder: string;
+  withDivider?: boolean;
+}) {
+  return (
+    <label
+      className={`relative flex flex-col justify-center px-5 py-3 sm:py-2 ${
+        withDivider ? "sm:border-l sm:border-line" : ""
+      }`}
+    >
+      <span className="text-[13px] font-semibold text-ink">{label}</span>
+      <div className="relative mt-1 flex items-center gap-2">
+        <input
+          name={name}
+          placeholder={placeholder}
+          className="w-full bg-transparent text-sm text-ink placeholder:text-ink-faint outline-none"
+        />
+        <MapPin className="h-4 w-4 shrink-0 text-ink-faint" />
+      </div>
+    </label>
+  );
+}
+
+function ChevronDown({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+/* ----------------------- Decorative florals ------------------------ */
+
+function FloralLeft({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 200 200" className={className} aria-hidden>
+      {/* leaves */}
+      <path
+        d="M30 110 C 50 70, 90 60, 120 80"
+        stroke="#7a4a3a"
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <ellipse cx="60" cy="78" rx="22" ry="11" fill="#9bd3c8" transform="rotate(-25 60 78)" />
+      <ellipse cx="92" cy="70" rx="18" ry="9" fill="#7cc1b3" transform="rotate(-10 92 70)" />
+      {/* pink flower */}
+      <g transform="translate(40 120)">
+        <circle r="14" fill="#f29ab0" />
+        <circle r="14" cx="-18" cy="-2" fill="#f6b8c5" />
+        <circle r="14" cx="14" cy="-10" fill="#e87890" />
+        <circle r="14" cx="6" cy="14" fill="#f29ab0" />
+        <circle r="6" fill="#fff5e8" />
+      </g>
+      {/* small daisy */}
+      <g transform="translate(120 130)">
+        {[0, 60, 120, 180, 240, 300].map((d) => (
+          <ellipse
+            key={d}
+            cx="0"
+            cy="-10"
+            rx="5"
+            ry="9"
+            fill="#fff5e8"
+            transform={`rotate(${d})`}
+          />
+        ))}
+        <circle r="5" fill="#f0b541" />
+      </g>
+    </svg>
+  );
+}
+
+function FloralRight({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 200 200" className={className} aria-hidden>
+      <path
+        d="M170 110 C 150 70, 110 60, 80 80"
+        stroke="#7a4a3a"
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <ellipse cx="140" cy="78" rx="22" ry="11" fill="#9bd3c8" transform="rotate(25 140 78)" />
+      <ellipse cx="108" cy="70" rx="18" ry="9" fill="#7cc1b3" transform="rotate(10 108 70)" />
+      {/* purple flower */}
+      <g transform="translate(160 120)">
+        <circle r="14" fill="#b89ad6" />
+        <circle r="14" cx="18" cy="-2" fill="#cdb6e3" />
+        <circle r="14" cx="-14" cy="-10" fill="#9c7cc4" />
+        <circle r="14" cx="-6" cy="14" fill="#b89ad6" />
+        <circle r="6" fill="#fff5e8" />
+      </g>
+      {/* coral flower */}
+      <g transform="translate(80 135)">
+        <circle r="11" fill="#ef6f7a" />
+        <circle r="11" cx="-14" cy="-2" fill="#f48b94" />
+        <circle r="11" cx="11" cy="-10" fill="#e85966" />
+        <circle r="5" fill="#fff5e8" />
+      </g>
+    </svg>
   );
 }
