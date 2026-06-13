@@ -1,20 +1,5 @@
-/**
- * Seed Firestore with the generated demo dataset.
- *
- *   npm run seed
- *
- * Reads Firebase config from `.env.local`, then writes the 260-profile
- * candidate pool and the 12 assigned clients into Firestore. Safe to re-run —
- * documents are keyed by their stable ids, so a re-run overwrites in place.
- *
- * This uses the Firebase Web SDK (same config the app uses). For it to write,
- * your Firestore security rules must allow writes (test mode is fine for the
- * MVP). See README → "Database setup".
- */
-
 import { config } from "dotenv";
 
-// Load env BEFORE importing anything that reads process.env.
 config({ path: ".env.local" });
 
 async function main() {
@@ -23,7 +8,6 @@ async function main() {
     "firebase/firestore"
   );
 
-  // Imported dynamically so dotenv has already populated process.env.
   const { maleCandidates, femaleCandidates, customers } = await import(
     "@/data/seed"
   );
@@ -47,8 +31,6 @@ async function main() {
   }
 
   const app = initializeApp(firebaseConfig);
-  // ignoreUndefinedProperties so optional fields (e.g. minIncomeLPA on male
-  // clients) are simply omitted rather than throwing.
   const db = initializeFirestore(app, { ignoreUndefinedProperties: true });
 
   const allCandidates = [...maleCandidates, ...femaleCandidates];
@@ -58,8 +40,7 @@ async function main() {
       `  • ${customers.length} customers`,
   );
 
-  // Flatten into a single write list, then commit in chunks. Firestore caps a
-  // batch at 500 ops; chunking keeps the seed correct even if the pool grows.
+  
   const writes = [
     ...allCandidates.map((c) => ({ col: COLLECTIONS.candidates, doc: c })),
     ...customers.map((c) => ({ col: COLLECTIONS.customers, doc: c })),
